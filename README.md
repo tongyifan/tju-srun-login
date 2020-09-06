@@ -13,13 +13,13 @@
 # virtualenv venv
 # source venv/bin/activate (venv\Scripts\activate in Windows)
 (venv) # pip install -r requirements.txt
-(venv) # python login.py --help
+(venv) # python login.py 用户名 密码
 ```
 
 ## 主要逻辑
-0. `python login.py --acid 7 username password interface`
-1. token = 通过向 `/cgi-bin/get_challenge` 传入用户名和指定网卡的当前IP -> **token**
-2. info = 通过js2py调用xEncode函数，传入username, password, ip, acid和enc_ver -> **info**
+0. `python login.py username password`
+1. token = 通过向 `/cgi-bin/get_challenge` 传入用户名和指定网卡的当前IP
+2. info = 通过js2py调用xEncode函数，传入username, password, ip, acid和enc_ver
 3. hmd5 = hmac md5编码password（key为token）
 4. chkstr = `token + token.join([username, hmd5, acid, current_ip, "200", "1", info])`
 5. 构造请求 `/cgi-bin/srun_portal`
