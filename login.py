@@ -54,6 +54,9 @@ def login(username, password, interface, acid):
     if not current_ip:
         return "错误：未找到172.*开头的IP"
 
+    if not acid:
+        acid = get_ac_id()
+
     token = get_challenge({"username": username, "ip": current_ip})
     if not token:
         return "获取token时出现错误"
@@ -115,6 +118,14 @@ def renew_ip_address(interface):
         print("该系统暂不支持，请发issue获取支持：{}".format(sys.platform))
 
 
+def get_ac_id():
+    resp = requests.get("http://1.1.1.1/")
+    if "断网提示" in resp.text:
+        return "7"
+    else:
+        return "11"
+
+
 @click.command()
 @click.argument("username", type=click.STRING)
 @click.argument("password", type=click.STRING)
@@ -123,9 +134,7 @@ def renew_ip_address(interface):
     type=click.Choice(netifaces.interfaces()),
     help="获取和更新IPv4的网卡，默认自动寻找IPv4为172.*的网卡",
 )
-@click.option(
-    "--acid", default="11", help="跳转到登录界面时URL中的ac_id，在你使用tjuwlan时为11（默认），使用LAN接入时为7"
-)
+@click.option("--acid", help="ac_id，默认自动选择")
 def main(username, password, interface, acid):
     if sys.platform.startswith("linux") or sys.platform.startswith("darwin"):
         euid = os.geteuid()
