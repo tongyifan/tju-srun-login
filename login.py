@@ -120,7 +120,10 @@ def renew_ip_address(interface):
 
 def get_ac_id():
     resp = requests.get("http://1.1.1.1/")
-    if "断网提示" in resp.text:
+    if "1.1.1.1" in resp.url:
+        print("您已经登录")
+        exit()
+    elif "断网提示" in resp.text:
         return "7"
     else:
         return "11"
